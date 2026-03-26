@@ -42,8 +42,12 @@ function filterByPeriod(videos: VideoData[], days: number): VideoData[] {
 }
 
 function isShort(video: VideoData): boolean {
+  if (video.durationSeconds !== undefined && video.durationSeconds > 0) {
+    return video.durationSeconds <= 60;
+  }
+  // Fallback: title-based detection
   const t = video.title.toLowerCase();
-  return t.includes('#shorts') || t.includes('#short') || t.startsWith('shorts:');
+  return t.includes('#shorts') || t.includes('#short');
 }
 
 function buildTrendPoints(videos: VideoData[], buckets = 5): number[] {

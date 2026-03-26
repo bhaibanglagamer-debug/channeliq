@@ -74,12 +74,18 @@ export async function getChannelTitle(channelId: string, apiKey?: string): Promi
   return title;
 }
 
+function parseDurationSeconds(iso: string): number {
+  const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!m) return 0;
+  return (parseInt(m[1] || '0') * 3600) + (parseInt(m[2] || '0') * 60) + parseInt(m[3] || '0');
+}
+
 export async function getVideos(
   channelId: string,
   maxResults: number = 50,
   apiKey?: string
 ): Promise<VideoData[]> {
-  const cacheKey = `videos:${channelId}:${maxResults}`;
+  const cacheKey = `videos:v2:${channelId}:${maxResults}`;
   const cached = getCached<VideoData[]>(cacheKey);
   if (cached) return cached;
 
@@ -123,7 +129,7 @@ export async function getVideos(
     for (let i = 0; i < videoIds.length; i += 50) {
       const batch = videoIds.slice(i, i + 50);
       const statsParams = new URLSearchParams({
-        part: 'snippet,statistics',
+        part: 'snippet,statistics,contentDetails',
         id: batch.join(','),
         key: currentKey,
       });
@@ -153,6 +159,7 @@ export async function getVideos(
           publishedAt: item.snippet?.publishedAt || '',
           outlierScore: 0,
           thumbnail: item.snippet?.thumbnails?.medium?.url || '',
+          durationSeconds: parseDurationSeconds(item.contentDetails?.duration || ''),
         });
       }
     }

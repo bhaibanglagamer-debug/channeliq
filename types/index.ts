@@ -7,6 +7,7 @@ export interface VideoData {
   publishedAt: string;
   outlierScore: number;
   thumbnail: string;
+  durationSeconds?: number;
 }
 
 export interface CompetitorData {
