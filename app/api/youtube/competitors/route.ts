@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       try {
         const channelId = await resolveChannelId(handle);
         const channelTitle = await getChannelTitle(channelId);
-        const videos = await getVideos(channelId, 20);
+        const videos = await getVideos(channelId, 50);
         const avgOutlierScore =
           videos.length > 0
             ? Math.round((videos.reduce((sum, v) => sum + v.outlierScore, 0) / videos.length) * 100) / 100
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 
     const channelId = await resolveChannelId(handle);
     const channelTitle = await getChannelTitle(channelId);
-    const videos = await getVideos(channelId, 20);
+    const videos = await getVideos(channelId, 50);
     const avgOutlierScore =
       videos.length > 0
         ? Math.round((videos.reduce((sum, v) => sum + v.outlierScore, 0) / videos.length) * 100) / 100

@@ -22,12 +22,11 @@ const CHANNEL_COLORS: Record<string, string> = {
   '@corbingpt': '#ef4444',
 };
 
-type Period = '7' | '14' | '30' | '90';
+type Period = '7' | '14' | '30';
 const PERIOD_OPTIONS: { label: string; value: Period }[] = [
   { label: '7 days', value: '7' },
   { label: '14 days', value: '14' },
   { label: '30 days', value: '30' },
-  { label: '90 days', value: '90' },
 ];
 
 function getColor(handle: string, index: number): string {
@@ -116,7 +115,7 @@ export default function CompetitorsPage() {
   const [loadingGaps, setLoadingGaps] = useState(false);
   const [addingHandle, setAddingHandle] = useState(false);
   const [error, setError] = useState<{ message: string } | null>(null);
-  const [period, setPeriod] = useState<Period>('90');
+  const [period, setPeriod] = useState<Period>('30');
 
   // Load saved handles from server on mount
   useEffect(() => {
