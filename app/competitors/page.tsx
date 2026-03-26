@@ -41,6 +41,11 @@ function filterByPeriod(videos: VideoData[], days: number): VideoData[] {
   return videos.filter((v) => new Date(v.publishedAt) >= cutoff);
 }
 
+function isShort(video: VideoData): boolean {
+  const t = video.title.toLowerCase();
+  return t.includes('#shorts') || t.includes('#short') || t.startsWith('shorts:');
+}
+
 function buildTrendPoints(videos: VideoData[], buckets = 5): number[] {
   if (!videos.length) return Array(buckets).fill(0);
   const sorted = [...videos].sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime());
@@ -262,15 +267,24 @@ export default function CompetitorsPage() {
       })),
     ];
     return allChannels.map((ch, i) => {
-      if (!ch.videos.length) return { handle: ch.handle, name: ch.name, avgViews: 0, recentGrowth: 0, color: getColor(ch.handle, i) };
+      const shorts = ch.videos.filter(isShort);
+      const longs = ch.videos.filter((v) => !isShort(v));
+      const avgViews = ch.videos.length ? Math.round(ch.videos.reduce((s, v) => s + v.views, 0) / ch.videos.length) : 0;
+      const avgViewsLong = longs.length ? Math.round(longs.reduce((s, v) => s + v.views, 0) / longs.length) : 0;
+      const avgViewsShort = shorts.length ? Math.round(shorts.reduce((s, v) => s + v.views, 0) / shorts.length) : 0;
       const sorted = [...ch.videos].sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime());
       const half = Math.ceil(sorted.length / 2);
-      const oldAvg = sorted.slice(0, half).reduce((s, v) => s + v.views, 0) / half;
-      const newAvg = sorted.slice(half).reduce((s, v) => s + v.views, 0) / (sorted.length - half || 1);
+      const oldAvg = half ? sorted.slice(0, half).reduce((s, v) => s + v.views, 0) / half : 0;
+      const newAvg = (sorted.length - half) ? sorted.slice(half).reduce((s, v) => s + v.views, 0) / (sorted.length - half) : 0;
       return {
         handle: ch.handle,
         name: ch.name,
-        avgViews: Math.round(ch.videos.reduce((s, v) => s + v.views, 0) / ch.videos.length),
+        totalVideos: ch.videos.length,
+        longsCount: longs.length,
+        shortsCount: shorts.length,
+        avgViews,
+        avgViewsLong,
+        avgViewsShort,
         recentGrowth: oldAvg > 0 ? Math.round(((newAvg - oldAvg) / oldAvg) * 100) : 0,
         color: getColor(ch.handle, i),
       };
@@ -325,21 +339,55 @@ export default function CompetitorsPage() {
       )}
 
       {/* Channel Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
         {loading ? (
-          Array.from({ length: 6 }).map((_, i) => <SkeletonLoader key={i} className="h-24" />)
+          Array.from({ length: 6 }).map((_, i) => <SkeletonLoader key={i} className="h-44" />)
         ) : (
           channelStats.map((stat) => (
-            <div key={stat.handle} className="bg-gray-900 rounded-xl border border-gray-800 p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 rounded-full shrink-0" style={{ background: stat.color }} />
-                <span className="text-xs font-semibold text-white truncate">{stat.name}</span>
+            <div key={stat.handle} className="rounded-2xl p-5 card-accent" style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: stat.color }} />
+                  <span className="text-sm font-semibold text-white">{stat.name}</span>
+                  <span className="text-xs text-gray-600">{stat.handle}</span>
+                </div>
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${stat.recentGrowth >= 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'}`}>
+                  {stat.recentGrowth >= 0 ? '↑' : '↓'} {Math.abs(stat.recentGrowth)}%
+                </span>
               </div>
-              <p className="text-sm font-bold text-white">{formatNumber(stat.avgViews)}</p>
-              <p className="text-xs text-gray-500 mb-1.5">avg views</p>
-              <span className={`text-xs font-medium ${stat.recentGrowth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {stat.recentGrowth >= 0 ? '↑' : '↓'} {Math.abs(stat.recentGrowth)}%
-              </span>
+
+              {/* Upload stats */}
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                <div className="rounded-xl p-3 text-center" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                  <p className="text-lg font-bold text-white">{stat.totalVideos}</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">Videos</p>
+                </div>
+                <div className="rounded-xl p-3 text-center" style={{ background: 'rgba(99,102,241,0.12)' }}>
+                  <p className="text-lg font-bold text-indigo-300">{stat.longsCount}</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">Longs</p>
+                </div>
+                <div className="rounded-xl p-3 text-center" style={{ background: 'rgba(236,72,153,0.1)' }}>
+                  <p className="text-lg font-bold text-pink-300">{stat.shortsCount}</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">Shorts</p>
+                </div>
+              </div>
+
+              {/* Avg views breakdown */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">Avg views (all)</span>
+                  <span className="text-xs font-semibold text-white">{formatNumber(stat.avgViews)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">Avg views (longs)</span>
+                  <span className="text-xs font-semibold text-indigo-300">{stat.longsCount ? formatNumber(stat.avgViewsLong) : '—'}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">Avg views (shorts)</span>
+                  <span className="text-xs font-semibold text-pink-300">{stat.shortsCount ? formatNumber(stat.avgViewsShort) : '—'}</span>
+                </div>
+              </div>
             </div>
           ))
         )}
