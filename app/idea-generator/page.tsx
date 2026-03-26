@@ -120,7 +120,7 @@ export default function IdeaGeneratorPage() {
   const hasTopicData = context.topTopics.length > 0;
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white mb-1">Idea Generator</h1>
         <p className="text-gray-400 text-sm">AI ideas informed by your channel + competitors</p>

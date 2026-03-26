@@ -151,8 +151,8 @@ export default function TrendRadarPage() {
   const sortedKwData = [...kwData].sort((a, b) => b.changePercent - a.changePercent);
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex items-start justify-between">
+    <div className="p-4 md:p-8">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">Trend Radar</h1>
           <p className="text-gray-400 text-sm">Track keyword momentum week-over-week in your niche</p>
@@ -258,7 +258,7 @@ export default function TrendRadarPage() {
         <SkeletonLoader className="h-80 mb-6" />
       ) : chartData.length > 0 ? (
         <div className="bg-gray-900 rounded-xl border border-gray-800 p-5 mb-6">
-          <div className="flex items-center justify-between mb-1">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-1">
             <h3 className="text-sm font-semibold text-white">Weekly View Volume by Keyword</h3>
             <span className="text-xs text-gray-500">Total views on top 8 videos per keyword per week</span>
           </div>
@@ -330,7 +330,7 @@ export default function TrendRadarPage() {
                   isActive ? 'border-purple-500/50 bg-purple-500/5' : 'border-gray-800 bg-gray-900 hover:border-gray-700'
                 }`}
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ background: color }} />
                     <span className="text-sm font-medium text-white truncate">{kw.keyword}</span>

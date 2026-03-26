@@ -125,8 +125,8 @@ export default function WhatsWorkingPage() {
   const bottom5 = useMemo(() => [...filteredVideos].sort((a, b) => a.outlierScore - b.outlierScore).slice(0, 5), [filteredVideos]);
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex items-start justify-between">
+    <div className="p-4 md:p-8">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">What&apos;s Working</h1>
           <p className="text-gray-400 text-sm">Topic clusters ranked by outlier score</p>
@@ -142,7 +142,7 @@ export default function WhatsWorkingPage() {
       </div>
 
       {/* Period filter */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {PERIOD_OPTIONS.map((opt) => (
           <button
             key={opt.value}

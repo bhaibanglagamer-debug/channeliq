@@ -283,8 +283,8 @@ export default function CompetitorsPage() {
   ], [micheleVideos, competitors]);
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex items-start justify-between">
+    <div className="p-4 md:p-8">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">Competitors</h1>
           <p className="text-gray-400 text-sm">View trends, momentum, and content gaps vs competitors</p>
@@ -300,7 +300,7 @@ export default function CompetitorsPage() {
       </div>
 
       {/* Period filter */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {PERIOD_OPTIONS.map((opt) => (
           <button
             key={opt.value}
@@ -350,7 +350,7 @@ export default function CompetitorsPage() {
         <ChartSkeleton height={340} />
       ) : chartData.length > 0 ? (
         <div className="bg-gray-900 rounded-xl border border-gray-800 p-5 mb-6">
-          <div className="flex items-center justify-between mb-1">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-1">
             <h3 className="text-sm font-semibold text-white">View Trend (last {period} days)</h3>
             {crossings.length > 0 && (
               <span className="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-2 py-0.5 rounded-full">
@@ -407,7 +407,7 @@ export default function CompetitorsPage() {
             const topVideos = [...filteredVids].sort((a, b) => b.views - a.views).slice(0, 3);
             return (
               <div key={ch.handle} className="bg-gray-900 rounded-xl border border-gray-800 p-5">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                   <div className="flex items-center gap-2">
                     <div className="w-2.5 h-2.5 rounded-full" style={{ background: color }} />
                     <h3 className="text-sm font-semibold text-white">{ch.name}</h3>
@@ -482,7 +482,7 @@ export default function CompetitorsPage() {
 
       {/* Gap Detector */}
       <div className="bg-gray-900 rounded-xl border border-gray-800 p-5">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <div className="flex items-center gap-2">
             <Lightbulb className="w-4 h-4 text-yellow-400" />
             <h3 className="text-sm font-semibold text-white">Content Gap Detector</h3>
@@ -500,7 +500,7 @@ export default function CompetitorsPage() {
           <div className="space-y-3">
             {gaps.map((gap, i) => (
               <div key={i} className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-                <div className="flex items-start justify-between gap-3 mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 gap-3 mb-2">
                   <h4 className="text-sm font-semibold text-white">{gap.topic}</h4>
                   <div className="flex gap-1 shrink-0 flex-wrap">
                     {gap.coveredBy.map((ch) => (

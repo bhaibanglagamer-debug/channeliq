@@ -97,8 +97,8 @@ export default function IdeaBankPage() {
   };
 
   return (
-    <div className="p-8">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="p-4 md:p-8">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">Idea Bank</h1>
           <p className="text-gray-400 text-sm">
@@ -171,7 +171,7 @@ export default function IdeaBankPage() {
             onClick={() => setShowAddModal(false)}
           />
           <div className="relative bg-gray-900 border border-gray-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl">
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
               <h2 className="text-lg font-semibold text-white">Add Idea Manually</h2>
               <button
                 onClick={() => { setShowAddModal(false); resetForm(); }}

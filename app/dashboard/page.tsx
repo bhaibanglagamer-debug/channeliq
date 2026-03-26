@@ -101,9 +101,9 @@ export default function DashboardPage() {
   }, [filteredVideos]);
 
   return (
-    <div className="p-8 animate-fade-in">
+    <div className="p-4 md:p-8 animate-fade-in">
       {/* Header */}
-      <div className="mb-7 flex items-start justify-between">
+      <div className="mb-7 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white tracking-tight mb-1">Channel Dashboard</h1>
           <p className="text-sm text-gray-500">
